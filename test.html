@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Einstein AI</title>
-    <link rel="icon" type="image/png" href="AlbertEinstein.png">
+    <!-- Favicon: This link tag puts the image on the browser tab. -->
+    <link rel="icon" type="image/png" href="assets/AlbertEinstein.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -126,7 +127,8 @@
 </head>
 <body>
     <div class="container">
-        <img src="AlbertEinstein.png" alt="Albert Einstein Logo" class="logo">
+        <!-- On-page Logo: This image tag displays the logo on the website itself. -->
+        <img src="assets/AlbertEinstein.png" alt="Albert Einstein Logo" class="logo">
         <div class="header">Welcome to Albert Einstein Assistance</div>
         <div class="description">
             This AI can answer questions about Albert Einstein. You can also get specific information by typing a number:<br>
@@ -181,14 +183,8 @@
             "nuclear": "Einstein has no actual theory about nuclear but in 1939, Einstein signed a letter to President Roosevelt, warning of Germany's potential to build an atomic bomb. This letter was crucial in starting the Manhattan Project. He later regretted this and advocated for nuclear disarmament.",
             "photoelectric":"In 1905, Albert Einstein explained the photoelectric effect, a mystery where light hitting a metal surface ejects electrons. He proposed that light exists as discrete energy packets called photons.",
             "brownian motion":"Brownian motion is the random, erratic movement of microscopic particles suspended in a fluid. In 1905, Albert Einstein explained that this visible motion was caused by the particles being bombarded by invisible atoms and molecules. His work provided definitive proof for the existence of atoms.",
-            "summary": "study.png",
-            "image": "study1.jpeg", // Added new image for "summary" keyword
-            // bad word
-            "nigger":"Please be careful with your language!",
-            "dumb":"I apologize for that:( \nI will try to improve myself!",
-            "sybau":"Hey, that's not nice!",
-            "shut up":"Hey, that's not nice!",
-            "get out":"Hey, that's not nice!",
+            "summary": "assets/study.png",
+            "image": "assets/study1.jpeg", // Added new image for "summary" keyword
             //good word
             "thank you":"You're very welcome!",
             "nice":"Thank you!",
@@ -232,10 +228,10 @@
             
             // Check for image keywords first
             if (lowerCaseQuery === "summary") {
-                return "study.png";
+                return "assets/study.png";
             }
             if (lowerCaseQuery === "image") {
-                return "study1.jpeg";
+                return "assets/study1.jpeg";
             }
 
             // Then, check for an exact match in the knowledge base
