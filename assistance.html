@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einstein Assistance</title>
+    <link rel="icon" type="image/png" href="AlbertEinstein.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        .container {
+            background-color: #1f2937;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            max-width: 90%;
+            width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .header {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+        .description {
+            color: #d1d5db;
+            text-align: center;
+        }
+        .chat-container {
+            background-color: #374151;
+            border-radius: 0.75rem;
+            border: 1px solid #4b5563;
+            padding: 1.5rem;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1.5rem;
+            display: inline-block;
+        }
+        .user-message {
+            background-color: #3b82f6;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .ai-message {
+            background-color: #4b5563;
+            color: #ffffff;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+            white-space: pre-wrap; /* Preserve whitespace for newlines */
+        }
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .input-group textarea {
+            flex-grow: 1;
+            padding: 0.75rem;
+            background-color: #4b5563;
+            color: #ffffff;
+            border: 1px solid #6b7280;
+            border-radius: 0.75rem;
+            resize: none;
+        }
+        .input-group button {
+            background-color: #1f2937;
+            color: white;
+            padding: 0 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: 1px solid #6b7280;
+        }
+        .input-group button:hover {
+            background-color: #4b5563;
+        }
+        
+        .loading {
+          animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 1rem;
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Einstein AI</div>
+        <div class="description">
+            This AI can answer questions about Albert Einstein. You can also get specific information by typing a number:<br>
+            1. Biology<br>
+            2. His Publications<br>
+            3. His Rewards & Honors<br>
+            4. His Predictions<br>
+            5. Nuclear Power<br>
+            6. AboutUs
+        </div>
+        <div id="chat-box" class="chat-container">
+            <!-- Messages will be appended here by JavaScript -->
+        </div>
+        <div class="input-group">
+            <textarea id="user-input" rows="2" placeholder="Ask AI Assistant"></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // The "knowledge base" for our simple AI
+        const knowledgeBase = {
+            // General conversation
+            "hi": "Hello! How can I help you today?",
+            "hello": "Hi there! I'm here to answer your questions about Albert Einstein.",
+            "hey": "Hey! What would you like to know?",
+            "how are you": "I am a program, but I'm functioning perfectly. Thank you for asking!",
+
+            // Specific topics by number and keyword
+            "1": "While Albert Einstein was not a biologist, his work had a profound impact on the field. His 1905 paper on Brownian motion helped confirm the existence of atoms and molecules, which is a fundamental concept in biology.",
+            "2": "Some of Albert Einstein's most influential publications came in his 'annus mirabilis' (miracle year) of 1905, including papers on the photoelectric effect, Brownian motion, special relativity, and the equivalence of mass and energy (E=mc²).",
+            "3": "Einstein received numerous rewards and honors. The most famous was the 1921 Nobel Prize in Physics, which he was awarded for his discovery of the law of the photoelectric effect. He was also honored with the Copley Medal and the Franklin Medal.",
+            "4": "Some of Einstein's most significant predictions include gravitational lensing, where massive objects bend light; the existence of gravitational waves, ripples in spacetime; and the possibility of black holes, regions of space where gravity is so strong that nothing can escape.",
+            "5": "Einstein's E=mc² formula showed the immense energy potential within matter, which was a theoretical basis for nuclear power. He signed a letter to President Roosevelt in 1939, urging the U.S. to research atomic weapons, which later led to the Manhattan Project. He later expressed regret over his role.",
+            "6": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
+            "nuclear power": "Einstein's E=mc² formula showed the immense energy potential within matter, which was a theoretical basis for nuclear power. He signed a letter to President Roosevelt in 1939, urging the U.S. to research atomic weapons, which later led to the Manhattan Project. He later expressed regret over his role.",
+            "aboutus": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
+
+            // Keyword-based topics
+            "famous for": "Albert Einstein is most famous for developing the theory of relativity, which includes the well-known equation E=mc². He also made significant contributions to the development of quantum mechanics.",
+            "born": "Albert Einstein was born on March 14, 1879, in Ulm, Germany.",
+            "died": "Albert Einstein passed away on April 18, 1955, in Princeton, New Jersey, at the age of 76.",
+            "noble prize": "He received the 1921 Nobel Prize in Physics for his 'services to Theoretical Physics, and especially for his discovery of the law of the photoelectric effect.'",
+            "education": "He attended the Swiss Federal Polytechnic School in Zurich, where he trained as a teacher of physics and mathematics.",
+            "where he lived": "After leaving Germany, he became a Swiss citizen and eventually settled in the United States, where he worked at the Institute for Advanced Study in Princeton, New Jersey.",
+            "what is relativity": "The theory of relativity, developed by Einstein, is a scientific theory regarding the relationship between space and time.",
+            "e=mc2": "This famous equation, E=mc², means that energy (E) and mass (m) are equivalent and interconvertible. The 'c' represents the speed of light.",
+            "quote": "A famous quote by Einstein is: 'The important thing is not to stop questioning. Curiosity has its own reason for existence.'",
+            "brain": "After his death, Einstein's brain was preserved and studied by scientists, though the findings have been a subject of much debate and controversy.",
+        };
+
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        // Function to create a new message element and append it to the chat box
+        function createMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.classList.add('message');
+            if (isUser) {
+                messageDiv.classList.add('user-message');
+            } else {
+                messageDiv.classList.add('ai-message');
+            }
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Function to get the AI's response
+        function getResponse(query) {
+            const lowerCaseQuery = query.toLowerCase().trim();
+
+            // First, check for an exact match in the knowledge base
+            if (knowledgeBase[lowerCaseQuery]) {
+                return knowledgeBase[lowerCaseQuery];
+            }
+
+            // Next, check for conversational greetings
+            const greetingKeywords = ["hi", "hello", "hey", "how are you"];
+            if (greetingKeywords.some(keyword => lowerCaseQuery.includes(keyword))) {
+                return knowledgeBase[greetingKeywords.find(keyword => lowerCaseQuery.includes(keyword))];
+            }
+
+            // Finally, check for keyword-based topics
+            for (const keyword in knowledgeBase) {
+                if (lowerCaseQuery.includes(keyword)) {
+                    return knowledgeBase[keyword];
+                }
+            }
+            
+            return "I'm sorry, I don't understand that question. Please try asking about his life, theories, or use the numbered options.";
+        }
+
+        // Main function to handle sending a message and getting a response
+        function sendMessage() {
+            const userText = userInput.value.trim();
+            if (userText === '') return;
+
+            // Display user message
+            createMessage(userText, true);
+            userInput.value = '';
+            
+            // Show a loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.classList.add('ai-message', 'message', 'loading');
+            loadingIndicator.textContent = '...';
+            chatBox.appendChild(loadingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Get and display AI response with a slight delay to simulate processing
+            setTimeout(() => {
+                const response = getResponse(userText);
+                chatBox.removeChild(loadingIndicator); // Remove loading indicator
+                createMessage(response, false);
+            }, 1000);
+        }
+
+        // Listen for the Enter key to send the message
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // Initial message from the AI
+        window.onload = function() {
+            createMessage("Hello! I am a simple AI assistant. Ask me anything about Albert Einstein.");
+        };
+    </script>
+</body>
+</html>
