@@ -164,6 +164,8 @@
             "about us": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
 
             // Keyword-based topics
+            "theory":"Some of Albert Einstein's theory are: Special Relativity (1905) established that space and time are relative, not absolute, giving rise to time dilation and E=mc2. General Relativity (1915) redefined gravity as a curvature of space-time caused by mass.",
+            "life":"Albert Einstein (1879-1955) was a German-born theoretical physicist. He developed the theory of relativity, one of the two pillars of modern physics. In 1921, he won the Nobel Prize for his discovery of the photoelectric effect, which helped establish quantum theory. Fleeing the Nazis, he emigrated to the U.S. in 1933 and became a vocal advocate for civil rights and peace.",
             "famous for": "Albert Einstein is most famous for developing the theory of relativity, which includes the well-known equation E=mc². He also made significant contributions to the development of quantum mechanics.",
             "born": "Albert Einstein was born on March 14, 1879, in Ulm, Germany.",
             "died": "Albert Einstein passed away on April 18, 1955, in Princeton, New Jersey, at the age of 76.",
@@ -217,10 +219,10 @@
             const lowerCaseQuery = query.toLowerCase().trim();
             
             // Check for image keywords first
-            if (lowerCaseQuery === "study") {
+            if (lowerCaseQuery === "summary") {
                 return "study.png";
             }
-            if (lowerCaseQuery === "summary") {
+            if (lowerCaseQuery === "image") {
                 return "study1.jpeg";
             }
 
