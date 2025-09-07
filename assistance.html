@@ -56,7 +56,7 @@
             display: inline-block;
         }
         .user-message {
-            background-color: #3b82f6;
+            background-color: #6b7280;
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 0.25rem;
@@ -113,6 +113,15 @@
             width: 100px;
             height: auto;
         }
+
+        .ai-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            align-self: flex-start;
+            padding: 0;
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -125,11 +134,10 @@
             3. His Rewards & Honors<br>
             4. His Predictions<br>
             5. Nuclear Power<br>
-            6. AboutUs
+            6. About Us
         </div>
         <div id="chat-box" class="chat-container">
-            <!-- Messages will be appended here by JavaScript -->
-        </div>
+            </div>
         <div class="input-group">
             <textarea id="user-input" rows="2" placeholder="Ask AI Assistant"></textarea>
             <button onclick="sendMessage()">Send</button>
@@ -153,7 +161,7 @@
             "5": "Einstein's E=mc² formula showed the immense energy potential within matter, which was a theoretical basis for nuclear power. He signed a letter to President Roosevelt in 1939, urging the U.S. to research atomic weapons, which later led to the Manhattan Project. He later expressed regret over his role.",
             "6": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
             "nuclear power": "Einstein's E=mc² formula showed the immense energy potential within matter, which was a theoretical basis for nuclear power. He signed a letter to President Roosevelt in 1939, urging the U.S. to research atomic weapons, which later led to the Manhattan Project. He later expressed regret over his role.",
-            "aboutus": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
+            "about us": "Owner:\n1. Minh le\n2. Trever Janosek\n3. Gaige Merrit\n4. John Vu\n5. Aman Pohjonen",
 
             // Keyword-based topics
             "famous for": "Albert Einstein is most famous for developing the theory of relativity, which includes the well-known equation E=mc². He also made significant contributions to the development of quantum mechanics.",
@@ -162,10 +170,15 @@
             "noble prize": "He received the 1921 Nobel Prize in Physics for his 'services to Theoretical Physics, and especially for his discovery of the law of the photoelectric effect.'",
             "education": "He attended the Swiss Federal Polytechnic School in Zurich, where he trained as a teacher of physics and mathematics.",
             "where he lived": "After leaving Germany, he became a Swiss citizen and eventually settled in the United States, where he worked at the Institute for Advanced Study in Princeton, New Jersey.",
-            "what is relativity": "The theory of relativity, developed by Einstein, is a scientific theory regarding the relationship between space and time.",
+            "thery of relativity": "The theory of relativity, developed by Einstein, is a scientific theory regarding the relationship between space and time.",
             "e=mc2": "This famous equation, E=mc², means that energy (E) and mass (m) are equivalent and interconvertible. The 'c' represents the speed of light.",
             "quote": "A famous quote by Einstein is: 'The important thing is not to stop questioning. Curiosity has its own reason for existence.'",
             "brain": "After his death, Einstein's brain was preserved and studied by scientists, though the findings have been a subject of much debate and controversy.",
+            "nuclear": "Einstein has no actual theory about nuclear but in 1939, Einstein signed a letter to President Roosevelt, warning of Germany's potential to build an atomic bomb. This letter was crucial in starting the Manhattan Project. He later regretted this and advocated for nuclear disarmament.",
+            "photoelectric":"In 1905, Albert Einstein explained the photoelectric effect, a mystery where light hitting a metal surface ejects electrons. He proposed that light exists as discrete energy packets called photons.",
+            "brownian motion":"Brownian motion is the random, erratic movement of microscopic particles suspended in a fluid. In 1905, Albert Einstein explained that this visible motion was caused by the particles being bombarded by invisible atoms and molecules. His work provided definitive proof for the existence of atoms.",
+            "summary": "study.png",
+            "image": "study1.jpeg" // Added new image for "summary" keyword
         };
 
         const chatBox = document.getElementById('chat-box');
@@ -185,11 +198,33 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        // New function to create and append an image message
+        function createImageMessage(imageUrl) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('ai-message', 'ai-image');
+            
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.alt = "Relevant image";
+            
+            messageDiv.appendChild(imgElement);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
         // Function to get the AI's response
         function getResponse(query) {
             const lowerCaseQuery = query.toLowerCase().trim();
+            
+            // Check for image keywords first
+            if (lowerCaseQuery === "study") {
+                return "study.png";
+            }
+            if (lowerCaseQuery === "summary") {
+                return "study1.jpeg";
+            }
 
-            // First, check for an exact match in the knowledge base
+            // Then, check for an exact match in the knowledge base
             if (knowledgeBase[lowerCaseQuery]) {
                 return knowledgeBase[lowerCaseQuery];
             }
@@ -230,7 +265,13 @@
             setTimeout(() => {
                 const response = getResponse(userText);
                 chatBox.removeChild(loadingIndicator); // Remove loading indicator
-                createMessage(response, false);
+                
+                // Check if the response is an image file name
+                if (response.endsWith('.png') || response.endsWith('.jpeg')) {
+                    createImageMessage(response);
+                } else {
+                    createMessage(response, false);
+                }
             }, 1000);
         }
 
