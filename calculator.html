@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Calculators</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            background-color: #1E1E1E;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            transition: all 0.2s;
+        }
+        /* Changed input focus border and shadow to white/gray */
+        input:focus {
+            outline: none;
+            border-color: #E0E0E0;
+            box-shadow: 0 0 0 2px rgba(224, 224, 224, 0.5);
+        }
+        /* Changed button background to white/gray */
+        button {
+            background-color: #E0E0E0;
+            color: #121212;
+        }
+        /* Adjusted hover for better contrast */
+        button:hover {
+            background-color: #ffffff;
+            color: #121212;
+        }
+        .result-box {
+            background-color: #2B2B2B;
+            border: 1px solid #444;
+        }
+        /* Hide the spinner buttons on number inputs for different browsers */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="container mx-auto flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
+
+        <!-- E=mc^2 Calculator Card -->
+        <div class="card p-8 rounded-lg w-full">
+            <!-- Changed heading color to white -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">Mass-Energy Equivalence</h2>
+            <p class="text-gray-400 mb-4 text-center">
+                This formula, developed by Albert Einstein, calculates the energy (E) contained in a given amount of mass (m).
+                The speed of light squared (c2) is the conversion factor.
+            </p>
+            <div class="mb-4">
+                <label for="mass" class="block text-sm font-medium text-gray-400">Mass (m) in kg</label>
+                <input type="number" id="mass" class="mt-1 block w-full p-2 rounded-md border border-gray-600 bg-gray-800 text-white" placeholder="Enter your number">
+            </div>
+            <button id="calculateEMC2" class="w-full py-2 px-4 rounded-md font-semibold">
+                Calculate Energy
+            </button>
+            <div id="emc2-result" class="result-box mt-6 p-4 rounded-md font-mono text-center text-lg">
+                Enter a value and click calculate.
+            </div>
+        </div>
+
+        <!-- Photoelectric Effect Calculator Card -->
+        <div class="card p-8 rounded-lg w-full">
+            <!-- Changed heading color to white -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">Photoelectric Effect</h2>
+            <p class="text-gray-400 mb-4 text-center">
+                This effect describes the emission of electrons from a metal when light shines on it. It calculates the kinetic energy (KE) of the emitted electron.
+            </p>
+            <div class="mb-4">
+                <label for="frequency" class="block text-sm font-medium text-gray-400">Frequency (f) in Hz</label>
+                <input type="number" id="frequency" class="mt-1 block w-full p-2 rounded-md border border-gray-600 bg-gray-800 text-white" placeholder="Enter your number">
+            </div>
+            <div class="mb-4">
+                <label for="workFunction" class="block text-sm font-medium text-gray-400">Work Function (W) in J</label>
+                <input type="number" id="workFunction" class="mt-1 block w-full p-2 rounded-md border border-gray-600 bg-gray-800 text-white" placeholder="Enter your number">
+            </div>
+            <button id="calculatePhotoelectric" class="w-full py-2 px-4 rounded-md font-semibold">
+                Calculate Kinetic Energy
+            </button>
+            <div id="photoelectric-result" class="result-box mt-6 p-4 rounded-md font-mono text-center text-lg">
+                Enter values and click calculate.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const massInput = document.getElementById('mass');
+            const calculateEMC2Btn = document.getElementById('calculateEMC2');
+            const emc2ResultDiv = document.getElementById('emc2-result');
+
+            const frequencyInput = document.getElementById('frequency');
+            const workFunctionInput = document.getElementById('workFunction');
+            const calculatePhotoelectricBtn = document.getElementById('calculatePhotoelectric');
+            const photoelectricResultDiv = document.getElementById('photoelectric-result');
+
+            // Constants for physics calculations
+            const SPEED_OF_LIGHT = 299792458; // meters per second
+            const PLANCK_CONSTANT = 6.62607015e-34; // J·s
+
+            /**
+             * Calculates energy from mass using E=mc^2.
+             */
+            function calculateEMC2() {
+                try {
+                    const mass = parseFloat(massInput.value);
+                    if (isNaN(mass) || mass < 0) {
+                        emc2ResultDiv.textContent = 'Please enter a valid, non-negative mass.';
+                        emc2ResultDiv.classList.add('text-red-400');
+                        return;
+                    }
+                    // E = m * c^2
+                    const energy = mass * Math.pow(SPEED_OF_LIGHT, 2);
+                    emc2ResultDiv.textContent = `Energy: ${energy.toExponential(4)} J`;
+                    emc2ResultDiv.classList.remove('text-red-400');
+                } catch (e) {
+                    emc2ResultDiv.textContent = 'An error occurred during calculation. Please check your input.';
+                    emc2ResultDiv.classList.add('text-red-400');
+                }
+            }
+
+            /**
+             * Calculates the kinetic energy of an electron in the photoelectric effect.
+             */
+            function calculatePhotoelectric() {
+                try {
+                    const frequency = parseFloat(frequencyInput.value);
+                    const workFunction = parseFloat(workFunctionInput.value);
+
+                    if (isNaN(frequency) || isNaN(workFunction) || frequency < 0 || workFunction < 0) {
+                        photoelectricResultDiv.textContent = 'Please enter valid, non-negative values for frequency and work function.';
+                        photoelectricResultDiv.classList.add('text-red-400');
+                        return;
+                    }
+
+                    // E_photon = h * f
+                    const photonEnergy = PLANCK_CONSTANT * frequency;
+
+                    // KE = E_photon - W
+                    const kineticEnergy = photonEnergy - workFunction;
+
+                    if (kineticEnergy < 0) {
+                        photoelectricResultDiv.textContent = 'No electrons are emitted. Photon energy is less than the work function.';
+                        photoelectricResultDiv.classList.remove('text-white');
+                        photoelectricResultDiv.classList.add('text-yellow-400');
+                    } else {
+                        photoelectricResultDiv.textContent = `Kinetic Energy: ${kineticEnergy.toExponential(4)} J`;
+                        photoelectricResultDiv.classList.remove('text-yellow-400');
+                        // Changed result text color to white
+                        photoelectricResultDiv.classList.add('text-white');
+                    }
+                } catch (e) {
+                    photoelectricResultDiv.textContent = 'An error occurred during calculation. Please check your input.';
+                    photoelectricResultDiv.classList.add('text-red-400');
+                }
+            }
+
+            calculateEMC2Btn.addEventListener('click', calculateEMC2);
+            calculatePhotoelectricBtn.addEventListener('click', calculatePhotoelectric);
+        });
+    </script>
+
+</body>
+</html>
