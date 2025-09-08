@@ -101,6 +101,28 @@
                 Enter values and click calculate.
             </div>
         </div>
+        
+        <!-- Time Dilation Calculator Card -->
+        <div class="card p-8 rounded-lg w-full mt-8 md:mt-0">
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">Time Dilation</h2>
+            <p class="text-gray-400 mb-4 text-center">
+                This calculator uses the principles of special relativity to determine how time slows down for an object moving at a high velocity relative to an observer.
+            </p>
+            <div class="mb-4">
+                <label for="proper-time" class="block text-sm font-medium text-gray-400">Proper Time (t) in seconds</label>
+                <input type="number" id="proper-time" class="mt-1 block w-full p-2 rounded-md border border-gray-600 bg-gray-800 text-white" placeholder="Enter your number">
+            </div>
+            <div class="mb-4">
+                <label for="velocity" class="block text-sm font-medium text-gray-400">Relative Velocity (v/c)</label>
+                <input type="number" id="velocity" class="mt-1 block w-full p-2 rounded-md border border-gray-600 bg-gray-800 text-white" placeholder="Enter a value between 0 and 1">
+            </div>
+            <button id="calculate-dilation" class="w-full py-2 px-4 rounded-md font-semibold">
+                Calculate Dilated Time
+            </button>
+            <div id="dilation-result" class="result-box mt-6 p-4 rounded-md font-mono text-center text-lg">
+                Enter values and click calculate.
+            </div>
+        </div>
 
     </div>
 
@@ -114,6 +136,11 @@
             const workFunctionInput = document.getElementById('workFunction');
             const calculatePhotoelectricBtn = document.getElementById('calculatePhotoelectric');
             const photoelectricResultDiv = document.getElementById('photoelectric-result');
+            
+            const properTimeInput = document.getElementById('proper-time');
+            const velocityInput = document.getElementById('velocity');
+            const calculateDilationBtn = document.getElementById('calculate-dilation');
+            const dilationResultDiv = document.getElementById('dilation-result');
 
             // Constants for physics calculations
             const SPEED_OF_LIGHT = 299792458; // meters per second
@@ -175,9 +202,35 @@
                     photoelectricResultDiv.classList.add('text-red-400');
                 }
             }
+            
+            /**
+             * Calculates time dilation based on special relativity.
+             */
+            function calculateTimeDilation() {
+                try {
+                    const properTime = parseFloat(properTimeInput.value);
+                    const velocity = parseFloat(velocityInput.value);
+
+                    if (isNaN(properTime) || isNaN(velocity) || properTime < 0 || velocity < 0 || velocity >= 1) {
+                        dilationResultDiv.textContent = 'Please enter valid numbers. Proper time must be non-negative, and velocity must be between 0 and 1 (exclusive).';
+                        dilationResultDiv.classList.add('text-red-400');
+                        return;
+                    }
+
+                    // Dilated Time t' = t / sqrt(1 - (v/c)^2)
+                    const dilatedTime = properTime / Math.sqrt(1 - Math.pow(velocity, 2));
+
+                    dilationResultDiv.textContent = `Dilated Time: ${dilatedTime.toExponential(4)} s`;
+                    dilationResultDiv.classList.remove('text-red-400');
+                } catch (e) {
+                    dilationResultDiv.textContent = 'An error occurred during calculation. Please check your input.';
+                    dilationResultDiv.classList.add('text-red-400');
+                }
+            }
 
             calculateEMC2Btn.addEventListener('click', calculateEMC2);
             calculatePhotoelectricBtn.addEventListener('click', calculatePhotoelectric);
+            calculateDilationBtn.addEventListener('click', calculateTimeDilation);
         });
     </script>
 
